@@ -5,10 +5,16 @@ Text-based adventure game for Hackathon Doha 2025
 Mac
 ```bash
 curl -fsSL https://bun.com/install | bash
+# You may need to open a new temrinal window
+bun --version
+# Output: 1.x.y
 ```
 Windows
 ```bash
 powershell -c "irm bun.sh/install.ps1|iex"
+# You may need to open a new temrinal window
+bun --version
+# Output: 1.x.y
 ```
 
 ## Running
