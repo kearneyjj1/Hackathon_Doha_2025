@@ -5,7 +5,7 @@ Text-based adventure game for Hackathon Doha 2025
 ```bash
 curl -fsSL https://bun.com/install | bash
 bunx --bun bun install
-bunx --bun run dev
+bunx --bun bun run dev
 ```
 
 ## Running
