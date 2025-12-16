@@ -1,0 +1,458 @@
+/* =========================================================
+   Text Adventure Theme (Parchment + Ink)
+   Drop-in stylesheet: style.css
+   ========================================================= */
+
+/* ---- Fonts ----
+   Best: include these in your HTML <head>:
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Special+Elite&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+*/
+:root{
+  --bg-0: #0f0b07;         /* deep vignette */
+  --bg-1: #1a120c;         /* fallback */
+  --paper: #f2e7cf;        /* parchment */
+  --paper-2: #eadbbd;      /* parchment shadow */
+  --paper-3: #d7c7a6;      /* darker edge */
+  --ink: #241a12;          /* body text */
+  --ink-2: #3a2a1d;        /* secondary */
+  --muted: #6a5a4a;        /* muted text */
+  --accent: #7b2d26;       /* wax-seal red */
+  --accent-2: #2b5a6b;     /* cool contrast */
+  --tokens: #b08d3b;         /* highlights */
+  --danger: #8a1f1f;
+  --ok: #1f6b3a;
+
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 18px 50px rgba(0,0,0,.45);
+  --shadow-soft: 0 10px 24px rgba(0,0,0,.25);
+
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --body: "IM Fell English", "Georgia", "Times New Roman", serif;
+  --type: "Special Elite", "IM Fell English", serif;
+  --title: "UnifrakturCook", "IM Fell English", Georgia, serif;
+
+  --line: 1.55;
+  --letter: .2px;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body{
+  margin: 0;
+  font-family: var(--body);
+  color: var(--ink);
+  line-height: var(--line);
+  letter-spacing: var(--letter);
+
+  /* Tavern-dark backdrop */
+  background:
+    radial-gradient(1200px 700px at 50% 25%, rgba(255,230,180,.10), transparent 60%),
+    radial-gradient(900px 600px at 15% 85%, rgba(120,70,40,.16), transparent 60%),
+    radial-gradient(900px 600px at 85% 85%, rgba(60,70,120,.12), transparent 60%),
+    radial-gradient(1200px 900px at 50% 55%, rgba(0,0,0,.40), rgba(0,0,0,.70)),
+    linear-gradient(180deg, var(--bg-1), var(--bg-0));
+  display: grid;
+  place-items: center;
+  padding: 28px 18px;
+}
+
+/* ---- Layout container ----
+   Use .game as your root wrapper.
+*/
+.game{
+  width: min(980px, 100%);
+  height: 100%;              /* <<< ADD */
+  display: flex;             /* <<< CHANGE */
+  align-items: center;       /* <<< ADD */
+  justify-content: center;   /* <<< ADD */
+}
+
+/* ---- Parchment panel ---- */
+.panel{
+  position: relative;
+  background:
+    /* paper fibres + soft stains */
+    radial-gradient(900px 600px at 25% 20%, rgba(120,90,60,.16), transparent 55%),
+    radial-gradient(650px 500px at 80% 75%, rgba(120,90,60,.14), transparent 55%),
+    radial-gradient(900px 700px at 50% 40%, rgba(0,0,0,.06), transparent 60%),
+    linear-gradient(180deg, var(--paper), var(--paper-2));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 22px 18px;
+  overflow: hidden;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(60,40,20,.25);
+  width: 100%;
+  max-width: 980px;
+}
+
+/* Darkened edges to mimic worn parchment */
+.panel::before{
+  content:"";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 50% 50%, transparent 55%, rgba(60,40,20,.18) 85%, rgba(30,18,10,.28) 100%),
+    radial-gradient(900px 500px at 50% 0%, rgba(30,18,10,.16), transparent 55%),
+    radial-gradient(900px 500px at 50% 100%, rgba(30,18,10,.14), transparent 55%);
+  mix-blend-mode: multiply;
+}
+
+/* Subtle grain */
+.panel::after{
+  content:"";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .07;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.6) 0, rgba(0,0,0,.6) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.45) 0, rgba(0,0,0,.45) 1px, transparent 1px, transparent 4px);
+  transform: rotate(.3deg);
+}
+
+/* ---- Header ---- */
+.header{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.title{
+  font-family: var(--title);
+  font-size: clamp(32px, 4.3vw, 54px);
+  letter-spacing: .4px;
+  margin: 0;
+  color: #2a1c12;
+  text-shadow: 0 2px 0 rgba(255,255,255,.25);
+}
+
+.subtitle{
+  font-family: var(--type);
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  opacity: .95;
+}
+
+/* ---- Story output / log ----
+   Apply .log to the scrollable narrative area
+*/
+.log{
+  position: relative;
+  z-index: 1;
+  padding: 14px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.35);
+  border: 1px solid rgba(60,40,20,.18);
+  box-shadow: var(--shadow-soft) inset;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  flex: 1;
+}
+
+.log p{
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.log p:last-child{ margin-bottom: 0; }
+
+.log .narration{
+  color: var(--ink);
+}
+
+.log .system{
+  color: var(--ink-2);
+  font-style: italic;
+  opacity: .92;
+}
+
+.log .prompt{
+  font-family: var(--mono);
+  font-size: 14px;
+  color: rgba(36,26,18,.78);
+  background: rgba(0,0,0,.06);
+  border: 1px dashed rgba(60,40,20,.25);
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+.log .choice{
+  display: inline-block;
+  margin: 2px 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(123,45,38,.35);
+  background: rgba(123,45,38,.08);
+  color: #3a1c18;
+  font-family: var(--type);
+}
+
+.log .loot{
+  color: #3c2c12;
+  background: rgba(176,141,59,.10);
+  border-left: 4px solid rgba(176,141,59,.65);
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.log .danger{
+  color: #3b0e0e;
+  background: rgba(138,31,31,.10);
+  border-left: 4px solid rgba(138,31,31,.6);
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.log .success{
+  color: #10351d;
+  background: rgba(31,107,58,.10);
+  border-left: 4px solid rgba(31,107,58,.55);
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+/* ---- Controls ----
+   Use .controls as footer area containing input + buttons
+*/
+.controls{
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.input{
+  width: 100%;
+  font-family: var(--type);
+  font-size: 16px;
+  color: var(--ink);
+  background: rgba(255,255,255,.55);
+  border: 1px solid rgba(60,40,20,.25);
+  border-radius: 14px;
+  padding: 12px 12px;
+  outline: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,.10) inset;
+}
+
+.input::placeholder{
+  color: rgba(36,26,18,.55);
+}
+
+.input:focus{
+  border-color: rgba(123,45,38,.55);
+  box-shadow:
+    0 0 0 4px rgba(123,45,38,.14),
+    0 8px 20px rgba(0,0,0,.10) inset;
+}
+
+/* Buttons */
+.btn{
+  font-family: var(--type);
+  font-size: 15px;
+  letter-spacing: .3px;
+  color: #f7edd9;
+  background:
+    linear-gradient(180deg, rgba(123,45,38,.95), rgba(88,25,22,.95));
+  border: 1px solid rgba(0,0,0,.25);
+  border-radius: 14px;
+  padding: 11px 14px;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(0,0,0,.25);
+  transition: transform .08s ease, filter .12s ease, box-shadow .12s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn:hover{
+  filter: brightness(1.05);
+  box-shadow: 0 18px 36px rgba(0,0,0,.28);
+}
+
+.btn:active{
+  transform: translateY(1px);
+  filter: brightness(.98);
+}
+
+.btn:disabled{
+  cursor: not-allowed;
+  opacity: .55;
+  filter: grayscale(.2);
+}
+
+/* Secondary button */
+.btn.secondary{
+  color: #241a12;
+  background: linear-gradient(180deg, rgba(234,219,189,.9), rgba(215,199,166,.9));
+  border: 1px solid rgba(60,40,20,.28);
+}
+
+/* ---- Inline elements ---- */
+a{
+  color: var(--accent-2);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(43,90,107,.55);
+}
+a:hover{
+  border-bottom-style: solid;
+}
+
+hr{
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(60,40,20,.35), transparent);
+  margin: 14px 0;
+}
+
+kbd{
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: rgba(0,0,0,.06);
+  border: 1px solid rgba(60,40,20,.22);
+}
+
+/* ---- Scrollbars (WebKit) ---- */
+.log::-webkit-scrollbar{ width: 12px; }
+.log::-webkit-scrollbar-track{
+  background: rgba(0,0,0,.06);
+  border-radius: 999px;
+}
+.log::-webkit-scrollbar-thumb{
+  background: rgba(60,40,20,.28);
+  border: 3px solid rgba(255,255,255,.25);
+  border-radius: 999px;
+}
+
+/* ---- Optional: "status bar" ----
+   Use .status with .stat chips
+*/
+.status{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  margin-top: -4px;
+}
+
+.stat{
+  font-family: var(--type);
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.06);
+  border: 1px solid rgba(60,40,20,.20);
+  color: rgba(36,26,18,.9);
+}
+
+.stat strong{
+  font-family: var(--mono);
+  font-weight: 700;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px){
+  .panel{ padding: 18px 16px 14px; }
+  .controls{ grid-template-columns: 1fr; }
+  .btn{ width: 100%; }
+  .log p{ font-size: 17px; }
+}
+
+/* ---- Accessibility / motion ---- */
+@media (prefers-reduced-motion: reduce){
+  .btn{ transition: none; }
+}
+
+/* ---- Utility classes ---- */
+.hidden{ display: none !important; }
+.center{ text-align: center; }
+.muted{ color: var(--muted); }
+.small{ font-size: 14px; }
+.mono{ font-family: var(--mono); }
+.layout{
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 14px;
+  align-items: start;
+  min-height: 0;
+}
+
+.media-frame{
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(60,40,20,.22);
+  background: rgba(0,0,0,.08);
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+}
+
+.media-video{
+  width: 100%;
+  height: 420px;
+  display: block;
+  object-fit: cover;
+  background: rgba(0,0,0,.15);
+}
+
+.media-caption{
+  padding: 10px 12px;
+  font-family: var(--type);
+  font-size: 13px;
+  color: rgba(36,26,18,.82);
+  background: rgba(255,255,255,.35);
+  border-top: 1px solid rgba(60,40,20,.18);
+}
+
+.story {
+  max-height: min(52vh, 520px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;        /* <<< REQUIRED */
+}
+
+
+@media (max-width: 900px){
+  .layout{ grid-template-columns: 1fr; }
+  .media-video{ height: 240px; }
+}
+
+.stat--pulse{
+  animation: statPulse 320ms ease-out;
+}
+
+.stat--up{
+  border-color: rgba(31,107,58,.45);
+  box-shadow: 0 0 0 4px rgba(31,107,58,.12);
+}
+
+.stat--down{
+  border-color: rgba(138,31,31,.45);
+  box-shadow: 0 0 0 4px rgba(138,31,31,.12);
+}
+
+@keyframes statPulse{
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
